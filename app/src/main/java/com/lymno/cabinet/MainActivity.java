@@ -34,6 +34,7 @@ import com.mikepenz.materialdrawer.model.interfaces.OnCheckedChangeListener;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 public class MainActivity extends AppCompatActivity {
+
     private static final int PROFILE_SETTING = 1;
 
     //save our header or result
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         // NOTE you have to define the loader logic too. See the CustomApplication for more details
         //final IProfile profile = new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon("https://avatars3.githubusercontent.com/u/1476232?v=3&s=460").withIdentifier(1);;
         //final IProfile profile2 = new ProfileDrawerItem().withName("Bernat Borras").withEmail("alorma@github.com").withIcon(Uri.parse("https://avatars3.githubusercontent.com/u/887462?v=3&s=460"));
-        final IProfile adultProfile = new ProfileDrawerItem().withName("Max Muster").withEmail("max.mustermann@gmail.com").withIcon(getResources().getDrawable(R.drawable.profile2));
+        final IProfile adultProfile = new ProfileDrawerItem().withName("Мария Гамова").withEmail("marie2342@gmail.com").withIcon(getResources().getDrawable(R.drawable.profile2));
 
         // Create the AccountHeader
         headerResult = new AccountHeaderBuilder()
@@ -97,19 +98,22 @@ public class MainActivity extends AppCompatActivity {
                 .withToolbar(toolbar)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_wb_sunny).withIdentifier(1).withCheckable(false),
-                        new PrimaryDrawerItem().withName(R.string.element).withIcon(FontAwesome.Icon.faw_home).withIdentifier(2).withCheckable(false),
-                        new PrimaryDrawerItem().withName(R.string.element).withIcon(FontAwesome.Icon.faw_gamepad).withIdentifier(3).withCheckable(false),
-                        new PrimaryDrawerItem().withName(R.string.element).withIcon(FontAwesome.Icon.faw_eye).withIdentifier(4).withCheckable(false),
-                        new PrimaryDrawerItem().withDescription("A more complex sample").withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_adb).withIdentifier(5).withCheckable(false),
-                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_style).withIdentifier(6).withCheckable(false),
-                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_battery_charging_full).withIdentifier(7).withCheckable(false),
-                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_style).withIdentifier(8).withCheckable(false),
-                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_my_location).withIdentifier(9).withCheckable(false),
-                        new SectionDrawerItem().withName(R.string.element),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_open_source).withIcon(FontAwesome.Icon.faw_github).withIdentifier(20).withCheckable(false),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_contact).withIcon(GoogleMaterial.Icon.gmd_format_color_fill).withIdentifier(10).withTag("Bullhorn"),
-                        new DividerDrawerItem()
+                        new PrimaryDrawerItem().withName("Услуги").withIcon(FontAwesome.Icon.faw_eye).withIdentifier(4).withCheckable(false),
+                        new PrimaryDrawerItem().withName("Новости").withIcon(FontAwesome.Icon.faw_gamepad).withIdentifier(4).withCheckable(false),
+                        new DividerDrawerItem(),
+                        new PrimaryDrawerItem().withName("Дима").withIcon(R.drawable.ava_dave).withIdentifier(1).withCheckable(false),
+                        new PrimaryDrawerItem().withName("Дима младший").withIcon(R.drawable.ava_dave_y).withIdentifier(2).withCheckable(false),
+                        new PrimaryDrawerItem().withName("Настя").withIcon(R.drawable.ava_ana).withIdentifier(3).withCheckable(false),
+                        new DividerDrawerItem(),
+//                        new PrimaryDrawerItem().withDescription("A more complex sample").withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_adb).withIdentifier(5).withCheckable(false),
+//                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_style).withIdentifier(6).withCheckable(false),
+//                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_battery_charging_full).withIdentifier(7).withCheckable(false),
+//                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_style).withIdentifier(8).withCheckable(false),
+//                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_my_location).withIdentifier(9).withCheckable(false),
+//                        new SectionDrawerItem().withName(R.string.element),
+                        new SecondaryDrawerItem().withName("Настройки").withIcon(FontAwesome.Icon.faw_github).withIdentifier(20).withCheckable(false),
+                        new SecondaryDrawerItem().withName("Помощь").withIcon(GoogleMaterial.Icon.gmd_format_color_fill).withIdentifier(10).withTag("Bullhorn")
+//                        new DividerDrawerItem()
                 ) // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
