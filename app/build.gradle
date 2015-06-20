@@ -35,4 +35,5 @@ dependencies {
         transitive = true
     }
     compile 'com.mikepenz:octicons-typeface:2.2.0@aar'
+    compile 'com.android.support:design:22.2.0'
 }

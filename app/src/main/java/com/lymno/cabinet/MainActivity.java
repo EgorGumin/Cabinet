@@ -1,17 +1,17 @@
 package com.lymno.cabinet;
 
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
-import com.mikepenz.aboutlibraries.Libs;
-import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.FontAwesome;
@@ -24,27 +24,28 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
-import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
-import com.mikepenz.materialdrawer.model.ToggleDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
-import com.mikepenz.materialdrawer.model.interfaces.Nameable;
-import com.mikepenz.materialdrawer.model.interfaces.OnCheckedChangeListener;
-import com.mikepenz.octicons_typeface_library.Octicons;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int PROFILE_SETTING = 1;
+    private static final int LOG_OFF = 1;
 
     //save our header or result
     private AccountHeader headerResult = null;
     private Drawer result = null;
-
+    String[] data = {"one", "two", "three", "four", "five"};
+    final int ACCOUNT = 2;
+    SharedPreferences cache;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        cache = getSharedPreferences("cache", MODE_PRIVATE);
+        String name = cache.getString("firstName", "");
+        String lastName = cache.getString("lastName", "");
+        String email = cache.getString("email", "");
 
         //Remove line to test RTL support
         //getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
@@ -52,12 +53,38 @@ public class MainActivity extends AppCompatActivity {
         // Handle Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        // Create a few sample profile
+        // адаптер
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, data);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner_nav);
+        spinner.setAdapter(adapter);
+        // заголовок
+        spinner.setPrompt("Title");
+        // выделяем элемент
+        spinner.setSelection(2);
+        // устанавливаем обработчик нажатия
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // показываем позиция нажатого элемента
+                Toast.makeText(getBaseContext(), "Position = " + position, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
+
+
+        // Create a few sample profile withIcon(getResources().getDrawable(R.drawable.profile2));
         // NOTE you have to define the loader logic too. See the CustomApplication for more details
         //final IProfile profile = new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon("https://avatars3.githubusercontent.com/u/1476232?v=3&s=460").withIdentifier(1);;
         //final IProfile profile2 = new ProfileDrawerItem().withName("Bernat Borras").withEmail("alorma@github.com").withIcon(Uri.parse("https://avatars3.githubusercontent.com/u/887462?v=3&s=460"));
-        final IProfile adultProfile = new ProfileDrawerItem().withName("Мария Гамова").withEmail("marie2342@gmail.com").withIcon(getResources().getDrawable(R.drawable.profile2));
+        final IProfile adultProfile = new ProfileDrawerItem().withName(name + " " + lastName).withEmail(email).withIcon(getResources().getDrawable(R.drawable.profile2));
+
 
         // Create the AccountHeader
         headerResult = new AccountHeaderBuilder()
@@ -66,8 +93,9 @@ public class MainActivity extends AppCompatActivity {
                 .addProfiles(
                         adultProfile,
                         //don't ask but google uses 14dp for the add account icon in gmail but 20dp for the normal icons (like manage account)
-                        new ProfileSettingDrawerItem().withName("Управление аккаунтом").withIcon(GoogleMaterial.Icon.gmd_settings),
-                        new ProfileSettingDrawerItem().withName("Выйти из аккаунта").withDescription("Add new GitHub Account").withIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add).actionBarSize().paddingDp(5).colorRes(R.color.material_drawer_primary_text)).withIdentifier(PROFILE_SETTING)
+                        new ProfileSettingDrawerItem().withName("Управление аккаунтом").withIcon(GoogleMaterial.Icon.gmd_settings).withIdentifier(ACCOUNT),
+                        new ProfileSettingDrawerItem().withName("Выйти из аккаунта").withDescription("Add new GitHub Account").withIcon(new IconicsDrawable(this,
+                                FontAwesome.Icon.faw_sign_out).actionBarSize().paddingDp(5).colorRes(R.color.material_drawer_primary_text)).withIdentifier(LOG_OFF)
 
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
@@ -75,16 +103,24 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
                         //sample usage of the onProfileChanged listener
                         //if the clicked item has the identifier 1 add a new profile ;)
-                        if (profile instanceof IDrawerItem && ((IDrawerItem) profile).getIdentifier() == PROFILE_SETTING) {
-                            IProfile newProfile = new ProfileDrawerItem().withNameShown(true).withName("Batman").withEmail("batman@gmail.com").withIcon(getResources().getDrawable(R.drawable.profile2));
-                            if (headerResult.getProfiles() != null) {
-                                //we know that there are 2 setting elements. set the new profile above them ;)
-                                headerResult.addProfile(newProfile, headerResult.getProfiles().size() - 2);
-                            } else {
-                                headerResult.addProfiles(newProfile);
-                            }
+                        if (profile instanceof IDrawerItem && ((IDrawerItem) profile).getIdentifier() == LOG_OFF) {
+                            SharedPreferences.Editor ed = cache.edit();
+                            ed.putString("IDToken", "");
+                            ed.putString("firstName", "");
+                            ed.putString("lastName", "");
+                            ed.putString("middleName", "");
+                            ed.putString("email", "");
+                            ed.apply();
+                            Context context = MainActivity.this;
+                            Intent singIntent = new Intent(context, SignInOrRegister.class);
+                            singIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            singIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(singIntent);
                         }
-
+                        else if (profile instanceof IDrawerItem && ((IDrawerItem) profile).getIdentifier() == ACCOUNT) {
+//                            Intent intent = new Intent(MainActivity.this, SignIn.class);
+//                            MainActivity.this.startActivity(intent);
+                        }
                         //false if you have not consumed the event and it should close the drawer
                         return false;
                     }
@@ -98,12 +134,13 @@ public class MainActivity extends AppCompatActivity {
                 .withToolbar(toolbar)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName("Услуги").withIcon(FontAwesome.Icon.faw_eye).withIdentifier(4).withCheckable(false),
-                        new PrimaryDrawerItem().withName("Новости").withIcon(FontAwesome.Icon.faw_gamepad).withIdentifier(4).withCheckable(false),
+                        new PrimaryDrawerItem().withName("Расписание уроков").withIcon(FontAwesome.Icon.faw_list).withIdentifier(4).withCheckable(true),
+                        new PrimaryDrawerItem().withName("Оценки и посещаемость").withIcon(FontAwesome.Icon.faw_newspaper_o).withIdentifier(4).withCheckable(true),
+                        new PrimaryDrawerItem().withName("Запись к врачу").withIcon(FontAwesome.Icon.faw_newspaper_o).withIdentifier(4).withCheckable(true),
                         new DividerDrawerItem(),
-                        new PrimaryDrawerItem().withName("Дима").withIcon(R.drawable.ava_dave).withIdentifier(1).withCheckable(false),
-                        new PrimaryDrawerItem().withName("Дима младший").withIcon(R.drawable.ava_dave_y).withIdentifier(2).withCheckable(false),
-                        new PrimaryDrawerItem().withName("Настя").withIcon(R.drawable.ava_ana).withIdentifier(3).withCheckable(false),
+//                        new PrimaryDrawerItem().withName("Дима").withIcon(R.drawable.ava_dave).withIdentifier(1).withCheckable(false),
+//                        new PrimaryDrawerItem().withName("Дима младший").withIcon(R.drawable.ava_dave_y).withIdentifier(2).withCheckable(false),
+//                        new PrimaryDrawerItem().withName("Настя").withIcon(R.drawable.ava_ana).withIdentifier(3).withCheckable(false),
                         new DividerDrawerItem(),
 //                        new PrimaryDrawerItem().withDescription("A more complex sample").withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_adb).withIdentifier(5).withCheckable(false),
 //                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_style).withIdentifier(6).withCheckable(false),
@@ -111,8 +148,8 @@ public class MainActivity extends AppCompatActivity {
 //                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_style).withIdentifier(8).withCheckable(false),
 //                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_my_location).withIdentifier(9).withCheckable(false),
 //                        new SectionDrawerItem().withName(R.string.element),
-                        new SecondaryDrawerItem().withName("Настройки").withIcon(FontAwesome.Icon.faw_github).withIdentifier(20).withCheckable(false),
-                        new SecondaryDrawerItem().withName("Помощь").withIcon(GoogleMaterial.Icon.gmd_format_color_fill).withIdentifier(10).withTag("Bullhorn")
+                        new SecondaryDrawerItem().withName("Настройки").withIcon(FontAwesome.Icon.faw_gears).withIdentifier(20).withCheckable(false),
+                        new SecondaryDrawerItem().withName("Помощь").withIcon(FontAwesome.Icon.faw_question_circle).withIdentifier(10).withCheckable(false)
 //                        new DividerDrawerItem()
                 ) // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -127,8 +164,9 @@ public class MainActivity extends AppCompatActivity {
                         if (drawerItem != null) {
                             Intent intent = null;
                             if (drawerItem.getIdentifier() == 1) {
+
+                                intent = new Intent(MainActivity.this, SignIn.class);
                                 /*
-                                intent = new Intent(SimpleHeaderDrawerActivity.this, SimpleCompactHeaderDrawerActivity.class);
                             } else if (drawerItem.getIdentifier() == 2) {
                                 intent = new Intent(SimpleHeaderDrawerActivity.this, ActionBarDrawerActivity.class);
                             } else if (drawerItem.getIdentifier() == 3) {

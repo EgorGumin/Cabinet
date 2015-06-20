@@ -91,6 +91,10 @@ public class Registration extends ActionBarActivity implements View.OnClickListe
                     SharedPreferences cache = getSharedPreferences("cache", MODE_PRIVATE);
                     SharedPreferences.Editor ed = cache.edit();
                     ed.putString("IDToken", result);
+                    ed.putString("firstName", firstName);
+                    ed.putString("lastName", lastName);
+                    ed.putString("middleName", firstName);
+                    ed.putString("email", email);
                     ed.apply();
 
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);

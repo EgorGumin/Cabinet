@@ -13,4 +13,6 @@
     <string name="element">Element</string>
     <string name="title_activity_registration">Registration</string>
     <string name="title_activity_splash_chooser">SplashChooser</string>
+    <string name="title_activity_sliding_tabs">SlidingTabs</string>
+    <string name="title_activity_test">Test</string>
 </resources>

@@ -24,7 +24,7 @@ public class SignIn extends ActionBarActivity implements View.OnClickListener{
     public EditText passwordEdit;
     public TextView forgot_pass;
 
-    private final String magicRequest = "api/users/entrance?";
+    private final String magicRequest = "api/users/entranceMob?";
 
     SharedPreferences cache;
 
@@ -74,17 +74,21 @@ public class SignIn extends ActionBarActivity implements View.OnClickListener{
     private class SignInRequest extends BasicRequest {
         protected void onPostExecute(String result) {
             try {
-                JSONObject JSONSignInResponse = new JSONObject(result);
-                String responseResult = JSONSignInResponse.getString("Result");
-                String responseMethod = JSONSignInResponse.getString("Function");
+                JSONObject obj = new JSONObject(result);
+                String responseResult = obj.getString("Result");
 
-                if ("entrance Fail".equals(responseMethod + " " + responseResult)) {
+                if (responseResult.equals("Fail")) {
                     Toast.makeText(SignIn.this,"Неверный пароль или ошибка", Toast.LENGTH_LONG).show();
                 }
                 else {
+                    JSONObject parent = obj.getJSONObject("Parent");
                     cache = getSharedPreferences("cache", MODE_PRIVATE);
                     SharedPreferences.Editor ed = cache.edit();
-                    ed.putString("IDToken", responseResult);
+                    ed.putString("IDToken", parent.getString("Token"));
+                    ed.putString("firstName", parent.getString("FirstName"));
+                    ed.putString("lastName", parent.getString("SecondName"));
+                    ed.putString("middleName", parent.getString("MiddleName"));
+                    ed.putString("email", parent.getString("Email"));
                     ed.apply();
 
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);

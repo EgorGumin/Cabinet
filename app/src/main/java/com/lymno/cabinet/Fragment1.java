@@ -42,7 +42,7 @@ public class Fragment1 extends Fragment {
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        new updateTimetable().execute("api/school/timetable");
+        new updateTimetable().execute("api/school/timetable?School=17&Class=8");
 //        list.add(new Subject(1, "Math", "Monday"));
 //        list.add(new Subject(2, "Math", "Monday"));
 
