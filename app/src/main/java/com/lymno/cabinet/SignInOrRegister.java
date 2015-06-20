@@ -16,21 +16,19 @@ public class SignInOrRegister extends ActionBarActivity implements View.OnClickL
         goToSign.setOnClickListener(this);
         Button goToReg = (Button) findViewById(R.id.goToReg);
         goToReg.setOnClickListener(this);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.goToSign:
-//                Intent intent = new Intent(this, SignIn.class);
-//                startActivity(intent);
+                Intent intent = new Intent(this, SignIn.class);
+                startActivity(intent);
                 break;
 
             case R.id.goToReg:
-//                Intent regIntent = new Intent(this, Registration.class);
-//                startActivity(regIntent);
+                Intent regIntent = new Intent(this, Registration.class);
+                startActivity(regIntent);
                 break;
 
             default:

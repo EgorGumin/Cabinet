@@ -11,4 +11,5 @@
     <string name="drawer_item_open_source">Open Source</string>
     <string name="drawer_item_contact">Contact</string>
     <string name="element">Element</string>
+    <string name="title_activity_registration">Registration</string>
 </resources>
