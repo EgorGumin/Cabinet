@@ -17,11 +17,6 @@
         <activity
             android:name=".SignInOrRegister"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".SignIn"
@@ -30,12 +25,22 @@
         </activity>
         <activity
             android:name=".Registration"
-            android:theme="@style/CustomActionBar"
             android:label="@string/title_activity_registration"
-            android:parentActivityName=".SignInOrRegister" >
+            android:parentActivityName=".SignInOrRegister"
+            android:theme="@style/CustomActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.lymno.cabinet.SignInOrRegister" />
+        </activity>
+        <activity
+            android:name=".SplashChooser"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:label="@string/title_activity_splash_chooser" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -12,4 +12,5 @@
     <string name="drawer_item_contact">Contact</string>
     <string name="element">Element</string>
     <string name="title_activity_registration">Registration</string>
+    <string name="title_activity_splash_chooser">SplashChooser</string>
 </resources>
