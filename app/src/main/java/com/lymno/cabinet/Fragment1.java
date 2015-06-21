@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,12 +24,11 @@ import java.util.List;
 public class Fragment1 extends Fragment {
     public TimetableAdapter mAdapter;
     private SwipeRefreshLayout refreshLayout;
+    String strtext;
 
     public ArrayList<Day> list = new ArrayList<Day>();
 //    private QuestsDataBase db = new QuestsDataBase(this);
     Context context;
-
-    final String LOG_TAG = "myLogs";
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -37,12 +37,16 @@ public class Fragment1 extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        strtext = getArguments().getString("edttext");
+        if (strtext.equals("")){
+            strtext = "api/school/timetable?School=34&Class=9";
+        }
         return inflater.inflate(R.layout.fragment1, null);
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        new updateTimetable().execute("api/school/timetable?School=17&Class=8");
+        new updateTimetable().execute(strtext);
 //        list.add(new Subject(1, "Math", "Monday"));
 //        list.add(new Subject(2, "Math", "Monday"));
 
@@ -57,6 +61,7 @@ public class Fragment1 extends Fragment {
         // 5. set item animator to DefaultAnimator
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
+
 
     private class updateTimetable extends BasicRequest {
         protected void onPostExecute(String JSONString) {

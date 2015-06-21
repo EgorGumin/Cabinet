@@ -22,6 +22,9 @@ public class SplashChooser extends Activity {
             context.startActivity(singIntent);
             this.finishActivity(0);
         } else {
+            Intent singIntent = new Intent(context, SignInOrRegister.class);
+            context.startActivity(singIntent);
+            this.finishActivity(0);
             Intent intent = new Intent(this, MainActivity.class);
             this.startActivity(intent);
             this.finishActivity(0);

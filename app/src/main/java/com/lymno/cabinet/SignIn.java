@@ -1,10 +1,12 @@
 package com.lymno.cabinet;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 /**
  * Created by Colored on 02.04.2015.
@@ -27,7 +30,7 @@ public class SignIn extends ActionBarActivity implements View.OnClickListener{
     private final String magicRequest = "api/users/entranceMob?";
 
     SharedPreferences cache;
-
+    private KidsDataBase db = new KidsDataBase(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,8 @@ public class SignIn extends ActionBarActivity implements View.OnClickListener{
         signin_button.setOnClickListener(this);
         loginEdit = (EditText) findViewById(R.id.login);
         passwordEdit = (EditText) findViewById(R.id.password);
+
+
 //        forgot_pass = (TextView) findViewById(R.id.forgot_pass);
 //        forgot_pass.setOnClickListener(this);
     }
@@ -90,6 +95,35 @@ public class SignIn extends ActionBarActivity implements View.OnClickListener{
                     ed.putString("middleName", parent.getString("MiddleName"));
                     ed.putString("email", parent.getString("Email"));
                     ed.apply();
+
+                    try {
+                        JSONArray kidsArray = obj.getJSONArray("Children");
+                        db.recreateDataBase(new ArrayList<Kid>());
+                        try {
+                            for (int i = 0; i < kidsArray.length(); ++i) {
+                                JSONObject kidJSON = kidsArray.getJSONObject(i);
+                                final int parentId = kidJSON.getInt("ParentId");
+                                final String firstName = kidJSON.getString("FirstName");
+                                Log.d("my", firstName);
+                                final String lastName = kidJSON.getString("SecondName");
+                                final String middleName = kidJSON.getString("MiddleName");
+                                final String school = kidJSON.getString("School");
+                                final String classOfSchool = kidJSON.getString("Class");
+                                final String dateOfBirth = kidJSON.getString("DateBirth");
+                                final String bornCertificate = kidJSON.getString("BornCertificate");
+
+                                Kid kid = new Kid(firstName, lastName, middleName, school, classOfSchool, dateOfBirth, parentId, bornCertificate);
+                                db.addKid(kid);
+                            }
+
+                        }
+                        catch (JSONException ex) {
+                            ex.printStackTrace();
+                        }
+
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
+                    }
 
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
                     startActivity(intent);

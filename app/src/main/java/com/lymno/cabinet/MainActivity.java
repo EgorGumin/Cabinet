@@ -1,9 +1,11 @@
 package com.lymno.cabinet;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -27,21 +29,40 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int LOG_OFF = 1;
-
+    private static final int DIARY = 10;
+    private static final int TIMETABLE = 11;
+    public CurrentState state = new CurrentState(10,0);
     //save our header or result
     private AccountHeader headerResult = null;
     private Drawer result = null;
-    String[] data = {"one", "two", "three", "four", "five"};
+    String[] kidsNames = {"test","test","test"};
     final int ACCOUNT = 2;
     SharedPreferences cache;
+    private KidsDataBase db = new KidsDataBase(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        Bundle bundle = new Bundle();
+//        bundle.putString("edttext", "api/school/timetable?School=34&Class=9");
+        // set Fragmentclass Arguments
+//        Fragment1 newFragment = new Fragment1();
+//        newFragment.setArguments(bundle);
+//        getFragmentManager().beginTransaction().replace(R.id.frame_container, newFragment).commit();
 
+        final ArrayList<Kid> kids = db.getKids();
+        if (kids.size() == 0){
+            kids.add(new Kid("dima","molotov", "ivanych", "122", "7b", "13081996", 2, "ee333"));
+        }
+
+        for (int i = 0; i < kids.size(); ++i) {
+            kidsNames[i] = kids.get(i).getFirstName();
+        }
         cache = getSharedPreferences("cache", MODE_PRIVATE);
         String name = cache.getString("firstName", "");
         String lastName = cache.getString("lastName", "");
@@ -49,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Remove line to test RTL support
         //getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        String test = kids.get(0).getFirstName();
 
         // Handle Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -56,21 +78,31 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // адаптер
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, data);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, kidsNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner_nav);
         spinner.setAdapter(adapter);
         // заголовок
-        spinner.setPrompt("Title");
+        spinner.setPrompt("firstName");
         // выделяем элемент
-        spinner.setSelection(2);
+        spinner.setSelection(0);
         // устанавливаем обработчик нажатия
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // показываем позиция нажатого элемента
                 Toast.makeText(getBaseContext(), "Position = " + position, Toast.LENGTH_SHORT).show();
+                state.setKid(position);
+                Bundle bundle = new Bundle();
+                String school = kids.get(position).getSchool();
+                String kidClass = kids.get(position).getClassOfSchool();
+                bundle.putString("edttext", "api/school/timetable?School="+school+"&Class="+kidClass);
+                // set Fragmentclass Arguments
+                Fragment1 newFragment = new Fragment1();
+                newFragment.setArguments(bundle);
+                getFragmentManager().beginTransaction().replace(R.id.frame_container, newFragment).commit();
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
@@ -134,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 .withToolbar(toolbar)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName("Расписание уроков").withIcon(FontAwesome.Icon.faw_list).withIdentifier(4).withCheckable(true),
+                        new PrimaryDrawerItem().withName("Расписание уроков").withIcon(FontAwesome.Icon.faw_list).withIdentifier(TIMETABLE).withCheckable(true),
                         new PrimaryDrawerItem().withName("Оценки и посещаемость").withIcon(FontAwesome.Icon.faw_newspaper_o).withIdentifier(4).withCheckable(true),
                         new PrimaryDrawerItem().withName("Запись к врачу").withIcon(FontAwesome.Icon.faw_newspaper_o).withIdentifier(4).withCheckable(true),
                         new DividerDrawerItem(),
@@ -206,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
         //only set the active selection or active profile if we do not recreate the activity
         if (savedInstanceState == null) {
             // set the selection to the item with the identifier 10
-            result.setSelectionByIdentifier(10, false);
+            result.setSelectionByIdentifier(TIMETABLE, false);
 
             //set the active profile
             headerResult.setActiveProfile(adultProfile);
