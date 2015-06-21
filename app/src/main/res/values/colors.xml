@@ -29,7 +29,7 @@
     <color name="material_drawer_primary_light">#C8E5C9</color>
     <color name="material_drawer_accent">#FE5621</color>
 
-    <color name="material_drawer_background">#303030</color>
+    <color name="material_drawer_background">#4BAE4F</color>
     <color name="material_drawer_icons">#000</color>
     <color name="material_drawer_primary_text">#FFF</color>
     <color name="material_drawer_secondary_text">#DEDEDE</color>

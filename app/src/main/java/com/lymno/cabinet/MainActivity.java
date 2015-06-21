@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // показываем позиция нажатого элемента
-                Toast.makeText(getBaseContext(), "Position = " + position, Toast.LENGTH_SHORT).show();
                 state.setKid(position);
                 Bundle bundle = new Bundle();
                 String school = kids.get(position).getSchool();
@@ -166,14 +165,14 @@ public class MainActivity extends AppCompatActivity {
                 .withToolbar(toolbar)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName("Расписание уроков").withIcon(FontAwesome.Icon.faw_list).withIdentifier(TIMETABLE).withCheckable(true),
-                        new PrimaryDrawerItem().withName("Оценки и посещаемость").withIcon(FontAwesome.Icon.faw_newspaper_o).withIdentifier(4).withCheckable(true),
-                        new PrimaryDrawerItem().withName("Запись к врачу").withIcon(FontAwesome.Icon.faw_newspaper_o).withIdentifier(4).withCheckable(true),
+                        new PrimaryDrawerItem().withName("Расписание уроков").withIcon(FontAwesome.Icon.faw_book).withIdentifier(TIMETABLE).withCheckable(true),
+                        new PrimaryDrawerItem().withName("Оценки и посещаемость").withIcon(FontAwesome.Icon.faw_check_square).withIdentifier(4).withCheckable(true),
+                        new PrimaryDrawerItem().withName("Запись к врачу").withIcon(FontAwesome.Icon.faw_heart).withCheckable(false),
                         new DividerDrawerItem(),
 //                        new PrimaryDrawerItem().withName("Дима").withIcon(R.drawable.ava_dave).withIdentifier(1).withCheckable(false),
 //                        new PrimaryDrawerItem().withName("Дима младший").withIcon(R.drawable.ava_dave_y).withIdentifier(2).withCheckable(false),
 //                        new PrimaryDrawerItem().withName("Настя").withIcon(R.drawable.ava_ana).withIdentifier(3).withCheckable(false),
-                        new DividerDrawerItem(),
+
 //                        new PrimaryDrawerItem().withDescription("A more complex sample").withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_adb).withIdentifier(5).withCheckable(false),
 //                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_style).withIdentifier(6).withCheckable(false),
 //                        new PrimaryDrawerItem().withName(R.string.element).withIcon(GoogleMaterial.Icon.gmd_battery_charging_full).withIdentifier(7).withCheckable(false),
@@ -198,8 +197,18 @@ public class MainActivity extends AppCompatActivity {
                             if (drawerItem.getIdentifier() == 1) {
 
                                 intent = new Intent(MainActivity.this, SignIn.class);
-                                /*
-                            } else if (drawerItem.getIdentifier() == 2) {
+
+                            } else if (drawerItem.getIdentifier() == 4) {
+                                state.setKid(position);
+                                Bundle bundle = new Bundle();
+                                String school = kids.get(position).getSchool();
+                                String kidClass = kids.get(position).getClassOfSchool();
+                                bundle.putString("edttext", "/api/school/misses?id=11");
+                                // set Fragmentclass Arguments
+                                FragmentMarks newFragment = new FragmentMarks();
+                                newFragment.setArguments(bundle);
+                                getFragmentManager().beginTransaction().replace(R.id.frame_container, newFragment).commit();
+                            /*
                                 intent = new Intent(SimpleHeaderDrawerActivity.this, ActionBarDrawerActivity.class);
                             } else if (drawerItem.getIdentifier() == 3) {
                                 intent = new Intent(SimpleHeaderDrawerActivity.this, MultiDrawerActivity.class);
